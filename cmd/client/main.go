@@ -4,8 +4,8 @@ import (
 	"flag"
 	"log"
 
-	"github.com/Roayuso/gRCP_APIS/client"
-	"github.com/Roayuso/gRCP_APIS/sample"
+	"github.com/Roayuso/gRPC_APIS/client"
+	"github.com/Roayuso/gRPC_APIS/sample"
 
 	"google.golang.org/grpc"
 )
