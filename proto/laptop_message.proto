@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package techschool.pcbook;
-
 option go_package = "pb.rayu";
 
 import "proto/processor_message.proto";

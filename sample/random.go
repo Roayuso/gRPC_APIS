@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"time"
 
+	pb "github.com/Roayuso/gRPC_APIS/pb/proto"
 	"github.com/google/uuid"
-	"github.com/roayuso/gRPC_APIS/pb"
 )
 
 func init() {

@@ -1,7 +1,7 @@
 package sample
 
 import (
-	"github.com/Roayuso/gRPC_APIS/pb"
+	pb "github.com/Roayuso/gRPC_APIS/pb/proto"
 	"github.com/golang/protobuf/ptypes"
 )
 
