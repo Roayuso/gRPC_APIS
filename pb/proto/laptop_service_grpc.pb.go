@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LaptopService_CreateLaptop_FullMethodName = "/LaptopService/CreateLaptop"
-	LaptopService_UploadImage_FullMethodName  = "/LaptopService/UploadImage"
+	LaptopService_CreateLaptop_FullMethodName   = "/LaptopService/CreateLaptop"
+	LaptopService_UploadImage_FullMethodName    = "/LaptopService/UploadImage"
+	LaptopService_GetLaptopStore_FullMethodName = "/LaptopService/GetLaptopStore"
 )
 
 // LaptopServiceClient is the client API for LaptopService service.
@@ -29,6 +30,7 @@ const (
 type LaptopServiceClient interface {
 	CreateLaptop(ctx context.Context, in *CreateLaptopRequest, opts ...grpc.CallOption) (*CreateLaptopResponse, error)
 	UploadImage(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UploadImageRequest, UploadImageResponse], error)
+	GetLaptopStore(ctx context.Context, in *GetLaptopStoreRequest, opts ...grpc.CallOption) (*GetLaptopStoreResponse, error)
 }
 
 type laptopServiceClient struct {
@@ -62,12 +64,23 @@ func (c *laptopServiceClient) UploadImage(ctx context.Context, opts ...grpc.Call
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type LaptopService_UploadImageClient = grpc.ClientStreamingClient[UploadImageRequest, UploadImageResponse]
 
+func (c *laptopServiceClient) GetLaptopStore(ctx context.Context, in *GetLaptopStoreRequest, opts ...grpc.CallOption) (*GetLaptopStoreResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLaptopStoreResponse)
+	err := c.cc.Invoke(ctx, LaptopService_GetLaptopStore_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LaptopServiceServer is the server API for LaptopService service.
 // All implementations must embed UnimplementedLaptopServiceServer
 // for forward compatibility.
 type LaptopServiceServer interface {
 	CreateLaptop(context.Context, *CreateLaptopRequest) (*CreateLaptopResponse, error)
 	UploadImage(grpc.ClientStreamingServer[UploadImageRequest, UploadImageResponse]) error
+	GetLaptopStore(context.Context, *GetLaptopStoreRequest) (*GetLaptopStoreResponse, error)
 	mustEmbedUnimplementedLaptopServiceServer()
 }
 
@@ -83,6 +96,9 @@ func (UnimplementedLaptopServiceServer) CreateLaptop(context.Context, *CreateLap
 }
 func (UnimplementedLaptopServiceServer) UploadImage(grpc.ClientStreamingServer[UploadImageRequest, UploadImageResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method UploadImage not implemented")
+}
+func (UnimplementedLaptopServiceServer) GetLaptopStore(context.Context, *GetLaptopStoreRequest) (*GetLaptopStoreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLaptopStore not implemented")
 }
 func (UnimplementedLaptopServiceServer) mustEmbedUnimplementedLaptopServiceServer() {}
 func (UnimplementedLaptopServiceServer) testEmbeddedByValue()                       {}
@@ -130,6 +146,24 @@ func _LaptopService_UploadImage_Handler(srv interface{}, stream grpc.ServerStrea
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type LaptopService_UploadImageServer = grpc.ClientStreamingServer[UploadImageRequest, UploadImageResponse]
 
+func _LaptopService_GetLaptopStore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLaptopStoreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LaptopServiceServer).GetLaptopStore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LaptopService_GetLaptopStore_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LaptopServiceServer).GetLaptopStore(ctx, req.(*GetLaptopStoreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LaptopService_ServiceDesc is the grpc.ServiceDesc for LaptopService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -140,6 +174,10 @@ var LaptopService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateLaptop",
 			Handler:    _LaptopService_CreateLaptop_Handler,
+		},
+		{
+			MethodName: "GetLaptopStore",
+			Handler:    _LaptopService_GetLaptopStore_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

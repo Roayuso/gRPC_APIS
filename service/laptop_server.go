@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const maxImageSize = 1 << 20
+const maxImageSize = 1 << 30
 
 // LaptopServer is the server that provides laptop services
 type LaptopServer struct {
@@ -76,6 +76,18 @@ func (server *LaptopServer) CreateLaptop(
 		Id: laptop.Id,
 	}
 	return res, nil
+}
+
+func (server *LaptopServer) GetLaptopStore(
+	ctx context.Context,
+	req *pb.GetLaptopStoreRequest,
+) (*pb.GetLaptopStoreResponse, error) {
+
+	laptop, _ := server.laptopStore.GetAll()
+
+	return &pb.GetLaptopStoreResponse{
+		Laptops: laptop,
+	}, nil
 }
 
 // UploadImage is a client-streaming RPC to upload a laptop image

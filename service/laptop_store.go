@@ -18,6 +18,8 @@ type LaptopStore interface {
 	Save(laptop *pb.Laptop) error
 	// Find finds a laptop by ID
 	Find(id string) (*pb.Laptop, error)
+	// GetAll gets all laptops in store
+	GetAll() ([]*pb.Laptop, error)
 }
 
 // InMemoryLaptopStore stores laptop in memory
@@ -62,6 +64,17 @@ func (store *InMemoryLaptopStore) Find(id string) (*pb.Laptop, error) {
 	}
 
 	return deepCopy(laptop)
+}
+
+// Get all stored laptops
+func (store *InMemoryLaptopStore) GetAll() ([]*pb.Laptop, error) {
+
+	var laptopList []*pb.Laptop
+
+	for _, value := range store.data {
+		laptopList = append(laptopList, value)
+	}
+	return laptopList, nil
 }
 
 func toBit(memory *pb.Memory) uint64 {

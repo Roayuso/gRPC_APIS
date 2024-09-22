@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"github.com/Roayuso/gRPC_APIS/client"
@@ -20,16 +21,22 @@ func testUploadImage(laptopClient *client.LaptopClient) {
 	laptopClient.UploadImage(laptop.GetId(), "tmp/laptop.jpg")
 }
 
+func testGetLaptopStore(laptopClient *client.LaptopClient) {
+	laptops := laptopClient.GetLaptopStore()
+	for _, laptop := range laptops {
+		fmt.Println(laptop.Cpu.Name)
+	}
+}
+
 func main() {
-	serverAddress := flag.String("address", "", "the server address")
-	enableTLS := flag.Bool("tls", false, "enable SSL/TLS")
+	serverAddress := "0.0.0.0:52454"
 	flag.Parse()
-	log.Printf("dial server %s, TLS = %t", *serverAddress, *enableTLS)
+	log.Printf("dial server %s", serverAddress)
 
 	transportOption := grpc.WithInsecure()
 
 	cc2, err := grpc.Dial(
-		*serverAddress,
+		serverAddress,
 		transportOption,
 	)
 	if err != nil {
@@ -38,6 +45,7 @@ func main() {
 
 	laptopClient := client.NewLaptopClient(cc2)
 	testCreateLaptop(laptopClient)
-	testUploadImage(laptopClient)
+	// testUploadImage(laptopClient)
+	testGetLaptopStore(laptopClient)
 
 }
